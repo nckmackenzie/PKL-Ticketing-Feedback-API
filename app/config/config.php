@@ -8,3 +8,5 @@ define('DB_NAME','pkl_ticketing_feedback');
 define('APPROOT',dirname(dirname(__FILE__)));
 //url root
 define('URLROOT','http://localhost/pkl_api');
+//JWT SECRET KEY
+define('JWT_KEY','P@n3$@rsKE!');
