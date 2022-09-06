@@ -1,6 +1,7 @@
 <?php
 //load config 
 require_once 'config/config.php';
+require_once 'helpers/JwtAuth.php';
 //load Libraries
 // require_once 'libraries/Core.php';
 // require_once 'libraries/Controller.php';
