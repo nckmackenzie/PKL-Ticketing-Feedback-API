@@ -2,6 +2,8 @@
 //load config 
 require_once 'config/config.php';
 require_once 'helpers/JwtAuth.php';
+require_once 'helpers/setheaders.php';
+require_once 'helpers/utils.php';
 //load Libraries
 // require_once 'libraries/Core.php';
 // require_once 'libraries/Controller.php';
