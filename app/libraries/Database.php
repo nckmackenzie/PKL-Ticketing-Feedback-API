@@ -12,7 +12,7 @@ class Database {
     private $pass = DB_PASS;
     private $dbname = DB_NAME;
 
-    private $dbh;
+    public $dbh;
     private $stmt;
     private $error;
 
@@ -74,6 +74,18 @@ class Database {
     {
        $this->execute();
        return $this->stmt->fetch(PDO::FETCH_OBJ);
+    }
+    //fetch
+    public function fetch()
+    {
+        $this->execute();
+        return $this->stmt->fetchAll();
+    }
+    //get single value
+    public function getvalue()
+    {
+        $this->execute();
+        return $this->stmt->fetchColumn();
     }
     //get row count
     public function rowCount()
