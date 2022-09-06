@@ -92,4 +92,10 @@ class Database {
     {
        return $this->stmt->rowCount();
     }
+    //get last inserted id
+    public function getlastinsertid()
+    {
+        $this->execute();
+        return $this->dbh->lastInsertId();
+    }
 }
