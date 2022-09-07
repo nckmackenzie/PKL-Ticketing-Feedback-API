@@ -9,3 +9,13 @@ function sendresponse($status,$message=null,$success,$data = []){
     ];
     echo json_encode($results);
 }
+
+function validatejson()
+{
+    if($_SERVER['HTTP_CONTENT_TYPE'] !== 'application/json'){
+        sendresponse(400,'Content type header not set to json',false);
+        return false;
+    }else{
+        return true;
+    }
+}
