@@ -41,3 +41,11 @@ function checkexists($con,$table,$field,$id,$param)
       return true;
     endif;
 }
+
+function returninsertedrow($con,$table,$id){
+    $sql = 'SELECT * FROM '.$table.' WHERE ID = :id';
+    $stmt = $con->prepare($sql);
+    $stmt->bindValue(':id',$id,PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_OBJ);
+}
