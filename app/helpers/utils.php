@@ -19,3 +19,25 @@ function validatejson()
         return true;
     }
 }
+
+function validateemail($email){
+    if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+        return false;
+    }else{
+        return true;
+    }
+}
+
+function checkexists($con,$table,$field,$id,$param)
+{
+    $sql = 'SELECT COUNT(*) FROM '.$table.' WHERE (Deleted = 0) AND (ID <> :id) AND '.$field.' = :param';
+    $stmt = $con->prepare($sql);
+    $stmt->bindValue(':id',$id,PDO::PARAM_INT);
+    $stmt->bindValue(':param',$param,PDO::PARAM_STR);
+    $stmt->execute();
+    if((int)$stmt->fetchColumn() !== 0) :
+      return false;
+    else:
+      return true;
+    endif;
+}
