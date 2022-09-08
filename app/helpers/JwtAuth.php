@@ -17,6 +17,7 @@ class JwtAuth
             'iss' => 'localhost',
             'aud' => 'localhost',
             'iat' => time(),
+            'exp' => time() + (60 * 60 * 24),
             'uid' => $userid,
             'utp' => $usertype
         ];
