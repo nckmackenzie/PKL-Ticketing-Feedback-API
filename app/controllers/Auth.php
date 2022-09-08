@@ -2,9 +2,11 @@
 
 class Auth extends Controller
 {
+    private $jwt;
     public function __construct()
     {
         $this->authmodel = $this->model('Auths');
+        $this->jwt = new JwtAuth;
     }
 
     public function index()
@@ -20,6 +22,30 @@ class Auth extends Controller
             if(!validatejson()) exit();
 
             $data = json_decode(file_get_contents('php://input'));
+            $messages = [];
+            //validation
+            if(!isset($data->email) || strlen(trim($data->email)) === 0){
+                array_push($messages,'Enter your email address');
+            }
+            if(!isset($data->password) || strlen(trim($data->password)) === 0){
+                array_push($messages,'Enter your password');
+            }
+
+            senderrorresponse($messages);
+            $logged_user = $this->authmodel->login($data);
+            if($this->authmodel->checkemailexists('',$data->email) || !$logged_user) :
+                sendresponse(401,'Invalid email or password',false);
+                exit();
+            endif;
+
+            $data = [
+                'id' => $logged_user->ID,
+                'user_name' => $logged_user->user_name,
+                'email' => $logged_user->email,
+                'user_type' => $logged_user->user_type_id,
+                'contact' => $logged_user->contact,
+            ];
+            sendresponse(200,'Login successfully',true,$data,'jwt',$this->jwt->getjwt($logged_user->ID,$logged_user->user_type_id));
 
         }elseif($_SERVER['REQUEST_METHOD'] === 'OPTIONS'){
             
@@ -62,7 +88,7 @@ class Auth extends Controller
             if(isset($data->email) && !empty($data->email) && !validateemail($data->email)) {
                 array_push($messages,'Invalid email address provided');
             }
-            if(isset($data->email) && !empty($data->email) && !$this->authmodel->checkemailexists($data->email,'')) {
+            if(isset($data->email) && !empty($data->email) && !$this->authmodel->checkemailexists('',$data->email)) {
                 array_push($messages,'Email address already exists');
             }
 
