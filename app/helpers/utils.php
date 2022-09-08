@@ -1,12 +1,14 @@
 <?php
 
-function sendresponse($status,$message=null,$success,$data = []){
+function sendresponse($status,$message=null,$success,$data = [],$optionalkey = '',$optionalval = ''){
     http_response_code($status);
     $results = [
         'success' => $success,
         'message' => $message,
-        'data' => $success ? $data : null
+        'data' => $success ? $data : null,
+        $optionalkey => $optionalval
     ];
+    unset($results['']);
     echo json_encode($results);
 }
 
