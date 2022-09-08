@@ -49,3 +49,10 @@ function returninsertedrow($con,$table,$id){
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_OBJ);
 }
+
+function senderrorresponse($messagearr){
+    if(count($messagearr) > 0){
+        sendresponse(400,$messagearr,false);
+        exit();
+    }
+}
