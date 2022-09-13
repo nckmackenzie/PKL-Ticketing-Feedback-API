@@ -32,9 +32,13 @@ class Auth extends Controller
             }
 
             senderrorresponse($messages);
+            if($this->authmodel->checkemailexists('',$data->email)) :
+                sendresponse(401,['Invalid email or password'],false);
+                exit();
+            endif;
             $logged_user = $this->authmodel->login($data);
-            if($this->authmodel->checkemailexists('',$data->email) || !$logged_user) :
-                sendresponse(401,'Invalid email or password',false);
+            if(!$logged_user) :
+                sendresponse(401,['Invalid email or password'],false);
                 exit();
             endif;
 
