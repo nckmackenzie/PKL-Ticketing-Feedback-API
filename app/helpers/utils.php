@@ -1,4 +1,7 @@
 <?php
+include 'vendor/autoload.php';
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 function sendresponse($status,$message=null,$success,$data = [],$optionalkey = '',$optionalval = ''){
     http_response_code($status);
@@ -57,4 +60,20 @@ function senderrorresponse($messagearr){
         sendresponse(400,$messagearr,false);
         exit();
     }
+}
+
+function decodejwt($jwt)
+{
+    $decoded = JWT::decode($jwt, new Key(JWT_KEY, 'HS256'));
+    return $decoded;
+}
+
+function getjwtdetails(){
+    if (!isset($_SERVER['HTTP_AUTHORIZATION']) || strlen($_SERVER['HTTP_AUTHORIZATION']) < 1) {
+        return false;
+    }
+
+    $accesstoken = explode(" ",$_SERVER['HTTP_AUTHORIZATION'])[1];
+    $details = decodejwt($accesstoken);
+    return [$details->exp,$details->uid];
 }
