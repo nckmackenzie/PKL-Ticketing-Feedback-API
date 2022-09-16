@@ -64,8 +64,14 @@ function senderrorresponse($messagearr){
 
 function decodejwt($jwt)
 {
-    $decoded = JWT::decode($jwt, new Key(JWT_KEY, 'HS256'));
-    return $decoded;
+    try {
+        $decoded = JWT::decode($jwt, new Key(JWT_KEY, 'HS256'));
+        return $decoded;
+    } catch (\Throwable $th) {
+        sendresponse(401,$th->getMessage(),false);
+        return false;
+    }
+    
 }
 
 function getjwtdetails(){
@@ -74,6 +80,7 @@ function getjwtdetails(){
     }
 
     $accesstoken = explode(" ",$_SERVER['HTTP_AUTHORIZATION'])[1];
+    if(!decodejwt($accesstoken)) exit;
     $details = decodejwt($accesstoken);
     return [$details->exp,$details->uid];
 }
