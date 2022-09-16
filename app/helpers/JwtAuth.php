@@ -2,6 +2,7 @@
 
 include 'vendor/autoload.php';
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
 
 
 class JwtAuth
@@ -24,5 +25,11 @@ class JwtAuth
 
         $jwt = JWT::encode($payload, JWT_KEY, 'HS256');
         return $jwt;
+    }
+
+    public function decodejwt($jwt)
+    {
+        $decoded = JWT::decode($jwt, new Key(JWT_KEY, 'HS256'));
+        return $decoded;
     }
 }
