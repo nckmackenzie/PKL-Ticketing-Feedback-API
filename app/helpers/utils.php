@@ -84,3 +84,11 @@ function getjwtdetails(){
     $details = decodejwt($accesstoken);
     return [$details->exp,$details->uid];
 }
+
+function getsingle($con,$table,$value){
+    $sql = 'SELECT * FROM '.$table.' WHERE ID = :id';
+    $stmt = $con->prepare($sql);
+    $stmt->bindValue(':id', $value,PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetch(PDO::FETCH_OBJ);
+}
