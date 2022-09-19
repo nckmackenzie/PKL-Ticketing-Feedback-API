@@ -2,3 +2,5 @@ app/helpers/vendor
 app/helpers/composer.json
 app/helpers/composer.lock
 
+app/config/config.php
+public/.htaccess
