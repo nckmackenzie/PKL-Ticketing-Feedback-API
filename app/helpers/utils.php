@@ -75,6 +75,9 @@ function decodejwt($jwt)
 }
 
 function getjwtdetails(){
+    if($_SERVER['REQUEST_METHOD'] === 'OPTIONS'){
+        exit;
+    }
     if (!isset($_SERVER['HTTP_AUTHORIZATION']) || strlen($_SERVER['HTTP_AUTHORIZATION']) < 1) {
         return false;
     }
