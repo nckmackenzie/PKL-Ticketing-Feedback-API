@@ -45,7 +45,7 @@ class Users extends Controller {
 
     public function updateprofile()
     {
-        if($_SERVER['REQUEST_METHOD'] === 'PATCH'){
+        if($_SERVER['REQUEST_METHOD'] === 'PUT'){
             if(!validatejson()) exit();
             $data = json_decode(file_get_contents('php://input'));
             $messages = [];
