@@ -27,7 +27,7 @@ class User
                             contact = :contact
                           WHERE
                             ID = :id');
-        $this->db->bind(':uname', !empty(trim($data->userName)) ? trim(strtolower($data->userName)) : null);
+        $this->db->bind(':uname', !empty(trim($data->name)) ? trim(strtolower($data->name)) : null);
         $this->db->bind(':email', !empty(trim($data->email)) ? trim(strtolower($data->email)) : null);
         $this->db->bind(':contact', !empty(trim($data->contact)) ? trim(strtolower($data->contact)) : null);
         $this->db->bind(':id', $id);
