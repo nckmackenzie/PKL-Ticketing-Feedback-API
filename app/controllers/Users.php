@@ -46,11 +46,11 @@ class Users extends Controller {
     public function updateprofile()
     {
         if($_SERVER['REQUEST_METHOD'] === 'PUT'){
-            if(!validatejson()) exit();
+            // if(!validatejson()) exit();
             $data = json_decode(file_get_contents('php://input'));
             $messages = [];
 
-            if (!isset($data->userName) || strlen(trim($data->userName)) === 0) {
+            if (!isset($data->name) || strlen(trim($data->name)) === 0) {
                 array_push($messages,'Please enter full name');
             } 
             if (!isset($data->email) || strlen(trim($data->email)) === 0) {
