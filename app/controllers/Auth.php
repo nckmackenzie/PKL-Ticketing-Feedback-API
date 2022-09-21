@@ -63,7 +63,7 @@ class Auth extends Controller
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST'){
            
-            if(!validatejson()) exit();
+            // if(!validatejson()) exit();
 
             $data = json_decode(file_get_contents('php://input'));
 
