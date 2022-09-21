@@ -43,4 +43,53 @@ class Users extends Controller {
         }
     }
 
+    public function updateprofile()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'PATCH'){
+            if(!validatejson()) exit();
+            $data = json_decode(file_get_contents('php://input'));
+            $messages = [];
+
+            if (!isset($data->userName) || strlen(trim($data->userName)) === 0) {
+                array_push($messages,'Please enter full name');
+            } 
+            if (!isset($data->email) || strlen(trim($data->email)) === 0) {
+                array_push($messages,'Please provide your email address');
+            }
+            if(isset($data->email) && strlen(trim($data->email)) > 0 
+               && !$this->usermodel->checkexists('email',$this->userid,$data->email)){
+                array_push($messages,'Email address already registered'); 
+            }
+            if(isset($data->contact) && strlen(trim($data->contact)) > 0 
+               && !$this->usermodel->checkexists('contact',$this->userid,$data->contact)){
+                array_push($messages,'Phone no address already registered'); 
+            }
+
+            if(count($messages) > 0){
+                sendresponse(400,$messages,false);
+                exit();
+            }
+
+            $user = $this->usermodel->updateprofile($data,$this->userid);
+            if(!$user) :
+                sendresponse(500,['Unable to update your profile! Retry or report to admin'],false);
+                exit;
+            endif;
+
+            $data = [
+                'id' => $user->ID,
+                'userName' => $user->user_name,
+                'email' => $user->email,
+                'contact' => $user->contact,
+            ];
+            sendresponse(200,'Updated successfully',true,$data);
+            exit;
+
+        }elseif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            
+        }else{
+            sendresponse(405, ['Invalid request method'],false);
+            exit;
+        }
+    }
 }
