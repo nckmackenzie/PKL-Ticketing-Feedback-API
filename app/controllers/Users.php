@@ -81,6 +81,7 @@ class Users extends Controller {
                 'userName' => $user->user_name,
                 'email' => $user->email,
                 'contact' => $user->contact,
+                'userType' => $user->user_type_id,
             ];
             sendresponse(200,'Updated successfully',true,$data);
             exit;
