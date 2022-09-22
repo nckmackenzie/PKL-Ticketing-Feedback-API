@@ -44,9 +44,9 @@ class Auth extends Controller
 
             $data = [
                 'id' => $logged_user->ID,
-                'user_name' => $logged_user->user_name,
+                'userName' => $logged_user->user_name,
                 'email' => $logged_user->email,
-                'user_type' => $logged_user->user_type_id,
+                'userType' => $logged_user->user_type_id,
                 'contact' => $logged_user->contact,
             ];
             sendresponse(200,'Login successfully',true,$data,'jwt',$this->jwt->getjwt($logged_user->ID,$logged_user->user_type_id));
