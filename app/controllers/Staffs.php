@@ -8,6 +8,32 @@ class Staffs extends Controller
         $this->staffmodel = $this->model('Staff');
     }
 
+    public function index()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $data = [];
+            $results = $this->staffmodel->GetStaffs();
+            foreach($results as $result)
+            {
+                array_push($data,[
+                    'id' => $result->ID,
+                    'staffName' => ucwords($result->StaffName)
+                ]);
+            }
+
+            sendresponse(200,null,true,$data);
+            exit;
+        }
+        elseif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+            
+        }
+        else{
+            sendresponse(405, ['Invalid request method'],false);
+            exit;
+        }
+    }
+
     public function create()
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST')
@@ -48,4 +74,6 @@ class Staffs extends Controller
             exit;
         }
     }
+
+    
 }
