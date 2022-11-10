@@ -95,3 +95,15 @@ function getsingle($con,$table,$value){
     $stmt->execute();
     return $stmt->fetch(PDO::FETCH_OBJ);
 }
+
+function validatetoken()
+{
+    if(!getjwtdetails()){
+        sendresponse(401,['Invalid or no access token provided'],false);
+        exit;
+    }
+    if(time() > getjwtdetails()[0]):
+        sendresponse(401,['Token has expired! Please Log In again'],false);
+        exit;
+    endif;
+}
