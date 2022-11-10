@@ -28,4 +28,9 @@ class Staff
             return false;
         }
     }
+
+    public function GetStaffs()
+    {
+        return loadresultset($this->db->dbh,'SELECT ID,StaffName FROM staffs',[]);
+    }
 }
