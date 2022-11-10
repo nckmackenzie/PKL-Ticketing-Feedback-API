@@ -17,8 +17,8 @@ class Staffs extends Controller
             foreach($results as $result)
             {
                 array_push($data,[
-                    'id' => $result->ID,
-                    'staffName' => ucwords($result->StaffName)
+                    'value' => $result->ID,
+                    'text' => ucwords($result->StaffName)
                 ]);
             }
 
