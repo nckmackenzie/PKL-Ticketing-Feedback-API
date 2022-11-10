@@ -62,7 +62,7 @@ class Staffs extends Controller
                 sendresponse(500,'Something went wrong when creating staff',false);
                 exit;
             }
-            $staff =['staffName' => $newstaff->StaffName,'id' => $newstaff->ID];
+            $staff =['staffName' => ucwords($newstaff->StaffName),'id' => $newstaff->ID];
             sendresponse(200,null,true,$staff);
             exit;
         }
