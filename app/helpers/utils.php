@@ -114,3 +114,10 @@ function loadresultset($con,$sql,$arr){
     $stmt->execute($arr);
     return $stmt->fetchAll(PDO::FETCH_OBJ);
 }
+
+//Get value from Database
+function getdbvalue($con,$sql,$arr){
+    $stmt = $con->prepare($sql);
+    $stmt->execute($arr);
+    return $stmt->fetchColumn();
+}
