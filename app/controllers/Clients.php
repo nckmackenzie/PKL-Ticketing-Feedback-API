@@ -68,4 +68,30 @@ class Clients extends Controller
             exit;
         }
     }
+
+    public function getcontact()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $id = isset($_GET['id']) && !empty(trim($_GET['id'])) ? (int)trim($_GET['id']) : null;
+            if(is_null($id)){
+                sendresponse(400,['Client not selected'],false);
+                exit;
+            }
+
+            $contact = $this->clientmodel->GetContact($id);
+
+            sendresponse(200,null,true,$contact);
+            exit;
+        }
+        elseif($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
+        {
+            
+        }
+        else
+        {
+            sendresponse(405, 'Invalid request method',false);
+            exit;
+        }
+    }
 }

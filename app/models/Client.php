@@ -33,4 +33,10 @@ class Client
             return false;
         }
     }
+
+    public function GetContact($id)
+    {
+        $sql = 'SELECT Contact FROM clients WHERE ID=?';
+        return getdbvalue($this->db->dbh,$sql,[$id]);
+    }
 }
