@@ -47,4 +47,13 @@ class Feedback
         }
         return true;
     }
+
+    public function GetDelivery($uniqueid)
+    {
+        $count = getdbvalue($this->db->dbh,'SELECT COUNT(*) FROM deliveries WHERE (UniqueId=?)',[$uniqueid]);
+        if((int)$count === 0) return false;
+        $deliveryid = $this->GetDeliveryId($uniqueid);
+        $count = getdbvalue($this->db->dbh,'SELECT COUNT(*) FROM feedback WHERE (DeliveryId=?)',[(int)$deliveryid]);
+        return (int)$count;
+    }
 }

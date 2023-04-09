@@ -70,4 +70,33 @@ class Feedbacks extends Controller
             exit;
         }
     }
+
+    public function checkfeedback()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $uniqueid = isset($_GET['did']) && !empty(trim($_GET['did'])) ? trim($_GET['did']) : null;
+
+            if(is_null($uniqueid) || !$this->feedbackmodel->GetDelivery($uniqueid)){
+                sendresponse(404,['Unable to get this delivery information'],false);
+                exit;
+            }
+
+            if($this->feedbackmodel->GetDelivery($uniqueid) === 0){
+                sendresponse(404,'Feedback not received',false) ;
+                exit;
+            }
+            sendresponse(200,'Feedback already done!',true) ;
+            exit;
+        }
+        elseif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
+        {
+
+        }
+        else
+        {
+            sendresponse(405, 'Invalid request method',false);
+            exit;
+        }
+    }
 }
