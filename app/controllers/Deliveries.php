@@ -1,4 +1,5 @@
 <?php
+// require_once 'SendMessage.php';
 
 class Deliveries extends Controller
 {
@@ -18,11 +19,13 @@ class Deliveries extends Controller
         }
         elseif($_SERVER['REQUEST_METHOD'] === 'POST')
         {
+            
             $fields = json_decode(file_get_contents('php://input'));
             $data = [
                 'deliverydate' => isset($fields->deliveryDate) && !empty(trim($fields->deliveryDate)) ? date('Y-m-d',strtotime($fields->deliveryDate)) : null,
                 'did' => $this->deliverymodel->GenerateUniqueId(),
                 'client' => isset($fields->client) && !empty(trim($fields->client)) ? (int)trim($fields->client) : null,
+                'contact' => isset($fields->contact) && !empty(trim($fields->contact)) ? (int)trim($fields->contact) : null,
                 'time' => isset($fields->deliveryTime) && !empty(trim($fields->deliveryTime)) ? date('h:i',strtotime($fields->deliveryTime)) : null,
                 'location' => isset($fields->location) && !empty(trim($fields->location)) ? strtolower(trim($fields->location)) : null,
                 'notes' => isset($fields->notes) && !empty(trim($fields->notes)) ? strtolower(trim($fields->notes)) : null,
@@ -37,8 +40,11 @@ class Deliveries extends Controller
                 sendresponse(500,['Unable to save delivery. Try again later!'],false);
                 exit;
             }
-
-            sendresponse(201,'Success',true);
+            $dateformated = date('d-m-Y',strtotime($data['deliverydate']));
+            $link = 'https://feedback.panesar.co.ke/?did='.$data['did'];
+            $message = "We would love to hear from you on the recent delivery we made on {$dateformated}. Click on the provided link to share your feedback.\n {$link}" ;
+            sendmessage('254724466628',$message);
+            sendresponse(201,'Success',true,$message);
             exit;
             // sendresponse(200,'success',true,$data);
         }
