@@ -2,6 +2,7 @@
 include 'vendor/autoload.php';
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use AfricasTalking\SDK\AfricasTalking;
 
 function sendresponse($status,$message=null,$success,$data = [],$optionalkey = '',$optionalval = ''){
     http_response_code($status);
@@ -120,4 +121,26 @@ function getdbvalue($con,$sql,$arr){
     $stmt = $con->prepare($sql);
     $stmt->execute($arr);
     return $stmt->fetchColumn();
+}
+
+function sendmessage($recipients,$message)
+{
+    // Initialize the SDK
+    $AT = new AfricasTalking(SMS_USERNAME, SMS_API);
+
+    $sms = $AT->sms();
+
+    try {
+        // Thats it, hit send and we'll take care of the rest
+        $result = $sms->send([
+            'to'      => $recipients,
+            'message' => $message,
+            'from'    => SMS_SENDER
+        ]);
+
+        return $result;
+    } catch (Exception $e) {
+        return false;
+        error_log($e->getMessage(),0);
+    }
 }
