@@ -43,8 +43,13 @@ class Deliveries extends Controller
             $dateformated = date('d-m-Y',strtotime($data['deliverydate']));
             $link = 'https://feedback.panesar.co.ke/?did='.$data['did'];
             $message = "We would love to hear from you on the recent delivery we made on {$dateformated}. Click on the provided link to share your feedback.\n {$link}" ;
-            sendmessage('254724466628',$message);
-            sendresponse(201,'Success',true,$message);
+            sendmessage($data['contact'],$message);
+            sendresponse(201,'Success',true);
+            // // $decoded = json_decode($response);
+            // $array = get_object_vars($response);
+            // $smsdata = $array['SMSMessageData'];
+
+            // echo json_encode($smsdata->Recipients[0]->status);
             exit;
             // sendresponse(200,'success',true,$data);
         }
