@@ -64,4 +64,31 @@ class Delivery
                 ORDER BY d.ID DESC LIMIT 10;';
         return loadresultset($this->db->dbh,$sql,[]);
     }
+    
+    public function GetDeliveryDetails($id)
+    {
+        $count = (int)getdbvalue($this->db->dbh,'SELECT COUNT(*) FROM deliveries WHERE ID=?',[$id]);
+        if($count === 0) return false;
+        $sql = 'SELECT 
+                    c.ClientName,
+                    d.DeliveryDate,
+                    d.DeliveryTime,
+                    d.Location,
+                    d.Notes,
+                    d.NotificationStatus,
+                    d.FeedbackNotificationStatus
+                FROM
+                    deliveries d join clients c on d.ClientId = c.ID
+                WHERE 
+                    d.ID = ?';
+
+        return loadsingleset($this->db->dbh,$sql,[$id]);
+    }
+
+    public function GetFeedbackDetails($id)
+    {
+        $count = (int)getdbvalue($this->db->dbh,'SELECT COUNT(*) FROM feedbacks WHERE DeliveryId=?',[$id]);
+        if($count === 0) return false;
+        return loadsingleset($this->db->dbh,'SELECT * FROM feedbacks WHERE (DeliveryId=?)',[$id]);
+    }
 }

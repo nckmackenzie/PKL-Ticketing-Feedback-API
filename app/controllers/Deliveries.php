@@ -92,5 +92,67 @@ class Deliveries extends Controller
             exit;
         }
     }
+    public function getdeliverydetails()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $id = isset($_GET['id']) && !empty(trim($_GET['id'])) ? (int)trim($_GET['id']) : null;
+            if(is_null($id)){
+                sendresponse(400,['Unable to get selected delivery'],false);
+                exit;
+            }
 
+            $delivery = $this->deliverymodel->GetDeliveryDetails($id);
+            $feedback = $this->deliverymodel->GetFeedbackDetails($id);
+
+            if(!$delivery){
+                sendresponse(404,['Unable to get selected delivery'],false);
+                exit;
+            }
+
+            $data = [
+                'deliveryDetails' => [
+                    'client' => ucwords($delivery->ClientName),
+                    'date' => date('d-m-Y',strtotime($delivery->DeliveryDate)),
+                    'time' => date('h:i',strtotime($delivery->DeliveryTime)),
+                    'location' => ucwords($delivery->Location),
+                    'notes' => !is_null($delivery->Notes) ? ucfirst($delivery->Notes) : null, 
+                    'deliverySMS' => ucwords($delivery->NotificationStatus),
+                    'feedbackSMS' => is_null($delivery->FeedbackNotificationStatus) ? 'Not Sent' : ucwords($delivery->FeedbackNotificationStatus) 
+                ],
+                'feedbackDetails' => [
+                    'submitted' => !$feedback ? false : true
+                ]
+            ];
+
+            if($feedback)
+            {
+                $data['feedbackDetails']['knowAbout'] = ucwords($feedback->KnowAbout);    
+                $data['feedbackDetails']['duration'] = (int)$feedback->Duration; 
+                $data['feedbackDetails']['quality'] = (int)$feedback->Quality;  
+                $data['feedbackDetails']['service'] = (int)$feedback->Service;  
+                $data['feedbackDetails']['repurchase'] = (int)$feedback->Repurchase;  
+                $data['feedbackDetails']['recommend'] = (int)$feedback->Recommend;  
+                $data['feedbackDetails']['durationAsCustomer'] = ucfirst($feedback->DurationAsCustomer);  
+                $data['feedbackDetails']['damages'] = boolval($feedback->damages);  
+                $data['feedbackDetails']['damagesExplained'] = !is_null($feedback->DamagesExplained) ? ucfirst($feedback->DamagesExplained) : null;  
+                $data['feedbackDetails']['pendingWork'] = boolval($feedback->PendingWork);  
+                $data['feedbackDetails']['pendingWorkExplained'] = !is_null($feedback->PendingWorkExplained) ? ucfirst($feedback->PendingWorkExplained) : null;
+                $data['feedbackDetails']['suggestions'] = !is_null($feedback->Suggestions) ? ucfirst($feedback->Suggestions) : null;  
+            }
+            
+
+            sendresponse(200,null,true,$data);
+            exit;
+        }
+        elseif($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
+        {
+            
+        }
+        else
+        {
+            sendresponse(405, 'Invalid request method',false);
+            exit;
+        }
+    }
 }
