@@ -117,8 +117,8 @@ class Deliveries extends Controller
                     'time' => date('h:i',strtotime($delivery->DeliveryTime)),
                     'location' => ucwords($delivery->Location),
                     'notes' => !is_null($delivery->Notes) ? ucfirst($delivery->Notes) : null, 
-                    'deliverySMS' => ucwords($delivery->NotificationStatus),
-                    'feedbackSMS' => is_null($delivery->FeedbackNotificationStatus) ? 'Not Sent' : ucwords($delivery->FeedbackNotificationStatus) 
+                    'delivery SMS' => ucwords($delivery->NotificationStatus),
+                    'feedback SMS' => is_null($delivery->FeedbackNotificationStatus) ? 'Not Sent' : ucwords($delivery->FeedbackNotificationStatus) 
                 ],
                 'feedbackDetails' => [
                     'submitted' => !$feedback ? false : true
