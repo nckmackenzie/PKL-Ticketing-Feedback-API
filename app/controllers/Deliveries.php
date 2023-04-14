@@ -41,17 +41,46 @@ class Deliveries extends Controller
                 exit;
             }
             $dateformated = date('d-m-Y',strtotime($data['deliverydate']));
-            $link = 'https://feedback.panesar.co.ke/?did='.$data['did'];
-            $message = "We would love to hear from you on the recent delivery we made on {$dateformated}. Click on the provided link to share your feedback.\n {$link}" ;
-            sendmessage($data['contact'],$message);
+            // $link = 'https://feedback.panesar.co.ke/?did='.$data['did'];
+            // $message = "We would love to hear from you on the recent delivery we made on {$dateformated}. Click on the provided link to share your feedback.\n {$link}" ;
+            $message = "Greetings. Please note we have scheduled a delivery for your products on {$dateformated}.Thank you for your business.";
+            $result = sendmessage($data['contact'],$message);
+            $status = $result['status'];
+            $this->deliverymodel->UpdateNotificationStatus($status,$data['did']);
             sendresponse(201,'Success',true);
-            // // $decoded = json_decode($response);
-            // $array = get_object_vars($response);
-            // $smsdata = $array['SMSMessageData'];
-
-            // echo json_encode($smsdata->Recipients[0]->status);
             exit;
-            // sendresponse(200,'success',true,$data);
+          
+        }
+        elseif($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
+        {
+            
+        }
+        else
+        {
+            sendresponse(405, 'Invalid request method',false);
+            exit;
+        }
+    }
+
+    public function getlatestdeliveries()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $deliveries = $this->deliverymodel->GetLatestDeliveries();
+            $data = [];
+            foreach($deliveries as $delivery):
+                array_push($data,[
+                    'id' => (int)$delivery->ID,
+                    'clientName' => ucwords($delivery->ClientName),
+                    'deliveryDate' => date('d-m-Y',strtotime($delivery->DeliveryDate)),
+                    'location' => ucwords($delivery->Location),
+                    'deliverySMS' => ucwords($delivery->NotificationStatus),
+                    'feedbackSMS' => is_null($delivery->FeedbackNotificationStatus) ? 'Not Sent' : ucwords($delivery->FeedbackNotificationStatus) 
+                ]);
+            endforeach;
+
+            sendresponse(200,null,true,$data);
+            exit;
         }
         elseif($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
         {

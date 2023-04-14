@@ -38,4 +38,30 @@ class Delivery
         }
         return true;
     }
+
+    public function UpdateNotificationStatus($status,$uniqueid)
+    {
+        $this->db->query('UPDATE deliveries SET NotificationStatus=:notstatus WHERE UniqueId=:id');
+        $this->db->bind(':notstatus',$status);
+        $this->db->bind(':id',$uniqueid);
+        if(!$this->db->execute()){
+            return false;
+        }
+        return true;
+    }
+
+    public function GetLatestDeliveries()
+    {
+        $sql = 'SELECT
+                    d.ID,
+                    c.ClientName,
+                    d.DeliveryDate,
+                    d.Location,
+                    d.NotificationStatus,
+                    d.FeedbackNotificationStatus
+                FROM   deliveries d join clients c on d.ClientId = c.ID left join feedbacks f on d.ID = f.DeliveryId
+                WHERE d.Deleted = 0
+                ORDER BY d.ID DESC LIMIT 10;';
+        return loadresultset($this->db->dbh,$sql,[]);
+    }
 }
