@@ -109,6 +109,13 @@ function validatetoken()
     endif;
 }
 
+//load single result
+function loadsingleset($con,$sql,$arr){
+    $stmt = $con->prepare($sql);
+    $stmt->execute($arr);
+    return $stmt->fetch(PDO::FETCH_OBJ);
+}
+
 //load result set
 function loadresultset($con,$sql,$arr){
     $stmt = $con->prepare($sql);
