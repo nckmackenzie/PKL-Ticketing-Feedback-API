@@ -106,7 +106,7 @@ class Deliveries extends Controller
             $feedback = $this->deliverymodel->GetFeedbackDetails($id);
 
             if(!$delivery){
-                sendresponse(404,['Unable to get selected delivery'],false);
+                sendresponse(404,['Delivery not found'],false);
                 exit;
             }
 
