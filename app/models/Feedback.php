@@ -56,4 +56,21 @@ class Feedback
         $count = getdbvalue($this->db->dbh,'SELECT COUNT(*) FROM feedback WHERE (DeliveryId=?)',[(int)$deliveryid]);
         return (int)$count;
     }
+
+    public function GetDeliveries()
+    {
+        $sql = 'SELECT 
+                    d.ID,
+                    c.ClientName,
+                    d.DeliveryDate,
+                    ((f.Duration + 
+                    f.Quality +
+                    f.Service +
+                    f.Repurchase +
+                    f.Recommend) / 5) As AverageRating
+                FROM `feedbacks` f join deliveries d on f.DeliveryId = d.ID
+                join  clients c on d.ClientId = c.ID
+                ORDER BY f.ID DESC';
+        return loadresultset($this->db->dbh,$sql,[]);
+    }
 }

@@ -8,6 +8,25 @@ class Feedbacks extends Controller
         $this->feedbackmodel = $this->model('Feedback');
     }
 
+    public function index()
+    {
+        validatetoken();
+        $data = [];
+        $deliveries = $this->feedbackmodel->GetDeliveries();
+        
+        foreach($deliveries as $delivery):
+            array_push($data,[
+                'id' => $delivery->ID,
+                'client' => ucwords($delivery->ClientName),
+                'date' => date('d/m/Y',strtotime($delivery->DeliveryDate)),
+                'ratings' => number_format($delivery->AverageRating,1)
+            ]);
+        endforeach;
+
+        sendresponse(200, 'Success', true, $data);
+        exit;
+    }
+
     public function submitfeedback()
     {
         if($_SERVER['REQUEST_METHOD'] === 'POST')
@@ -99,4 +118,5 @@ class Feedbacks extends Controller
             exit;
         }
     }
+    
 }
