@@ -15,7 +15,7 @@ class Dashboard extends Controller
         {
             $details = $this->dashboardmodel->SummaryInfo();
             $data = [
-                'rating' => $details[0],
+                'rating' => number_format($details[0],1),
                 'upcoming' => $details[1],
                 'success' => $details[2],
                 'reviews' => $details[3]
