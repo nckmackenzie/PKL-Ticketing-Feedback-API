@@ -36,4 +36,19 @@ class Auths
         if(!password_verify($data->password,$row->password)) return false;
         return $row;
     }
+
+    public function GetContact($email)
+    {
+        return getdbvalue($this->db->dbh,'SELECT contact FROM users WHERE email=?',[$email]);
+    }
+
+    public function ChangePassword($email,$password)
+    {
+        $this->db->query('UPDATE users SET `password`=:pwd WHERE email=:email');
+        $this->db->bind(':pwd', password_hash($password,PASSWORD_DEFAULT));
+        $this->db->bind(':email',$email);
+        if(!$this->db->execute()) :
+            return false;
+        endif;
+    }
 }

@@ -3,6 +3,7 @@
 class Auth extends Controller
 {
     private $jwt;
+    private $authmodel;
     public function __construct()
     {
         $this->authmodel = $this->model('Auths');
@@ -117,6 +118,54 @@ class Auth extends Controller
             ];
 
             sendresponse(200,'User created successfully!',true,$user);
+            exit();
+
+        }elseif($_SERVER['REQUEST_METHOD'] === 'OPTIONS'){
+            
+        }else{
+            sendresponse(405,'Invalid request method',false);
+            exit(1);
+        }
+    }
+
+    public function resetpassword()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'PATCH'){
+           
+            $data = json_decode(file_get_contents('php://input'));
+            $messages = [];
+
+            //validation
+            if (!isset($data->email) || strlen(trim($data->email)) === 0) {
+                array_push($messages,'Please enter your phone number');
+            } 
+
+            if(isset($data->email) && !empty($data->email) && !validateemail($data->email)) {
+                array_push($messages,'Invalid email address provided');
+            }
+            
+            if(isset($data->email) && !empty($data->email) && $this->authmodel->checkemailexists('',$data->email)) {
+                array_push($messages,'Email address not registered');
+            }
+
+            if(count($messages) > 0){
+                sendresponse(400,$messages,false);
+                exit();
+            }
+
+            $contact = $this->authmodel->GetContact($data->email);
+            $formattedcontact = '254' . substr($contact,1);
+            $randompassword = generaterandompassword();
+
+            if(!$this->authmodel->ChangePassword($data->email,$randompassword)){
+                sendresponse(500,'Unable to change password!',false);
+                exit();
+            }
+
+            $message = 'Password reset successfully. Your new password is '.$randompassword;
+            sendmessage($formattedcontact,$message);
+
+            sendresponse(200,'Password changed and sent successfully!',true);
             exit();
 
         }elseif($_SERVER['REQUEST_METHOD'] === 'OPTIONS'){
