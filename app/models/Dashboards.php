@@ -35,4 +35,14 @@ class Dashboards
         return loadresultset($this->db->dbh,'SELECT DISTINCT `StaffDept`,fn_get_department_count(StaffDept) As RecordCount 
                                              FROM `vw_cases_by_dept`',[]);
     }
+
+    public function SummaryInfo()
+    {
+        $rating = getdbvalue($this->db->dbh,'SELECT getaveragerating() as rating',[]);
+        $upcoming = getdbvalue($this->db->dbh,'SELECT COUNT(*) FROM deliveries WHERE (DeliveryDate > ?) AND (Deleted = 0)',[date('Y-m-d')]);
+        $success = getdbvalue($this->db->dbh,'SELECT COUNT(*) FROM deliveries WHERE (DeliveryDate < ?) AND (Deleted = 0)',[date('Y-m-d')]);
+        $reviews = getdbvalue($this->db->dbh,'SELECT COUNT(*) FROM feedbacks',[]);
+
+        return [$rating,$upcoming,$success,$reviews];
+    }
 }

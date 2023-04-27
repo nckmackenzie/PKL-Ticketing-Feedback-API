@@ -2,10 +2,37 @@
 
 class Dashboard extends Controller
 {
+    private $dashboardmodel;
     public function __construct()
     {
         validatetoken();
         $this->dashboardmodel = $this->model('Dashboards');
+    }
+
+    public function index()
+    {
+        if($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            $details = $this->dashboardmodel->SummaryInfo();
+            $data = [
+                'rating' => $details[0],
+                'upcoming' => $details[1],
+                'success' => $details[2],
+                'reviews' => $details[3]
+            ];
+
+            sendresponse(200,'success',true,$data);
+            exit;
+        }
+        elseif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
+        {
+            
+        }
+        else
+        {
+            sendresponse(405, 'Invalid request method',false);
+            exit;
+        }
     }
 
     public function summaryinfo()
