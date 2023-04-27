@@ -10,21 +10,33 @@ class Feedbacks extends Controller
 
     public function index()
     {
-        validatetoken();
-        $data = [];
-        $deliveries = $this->feedbackmodel->GetDeliveries();
-        
-        foreach($deliveries as $delivery):
-            array_push($data,[
-                'id' => $delivery->ID,
-                'client' => ucwords($delivery->ClientName),
-                'date' => date('d/m/Y',strtotime($delivery->DeliveryDate)),
-                'ratings' => number_format($delivery->AverageRating,1)
-            ]);
-        endforeach;
+        if($_SERVER['REQUEST_METHOD'] === 'GET')
+        {
+            validatetoken();
+            $data = [];
+            $deliveries = $this->feedbackmodel->GetDeliveries();
+            
+            foreach($deliveries as $delivery):
+                array_push($data,[
+                    'id' => $delivery->ID,
+                    'client' => ucwords($delivery->ClientName),
+                    'date' => date('d/m/Y',strtotime($delivery->DeliveryDate)),
+                    'ratings' => number_format($delivery->AverageRating,1)
+                ]);
+            endforeach;
 
-        sendresponse(200, 'Success', true, $data);
-        exit;
+            sendresponse(200, 'Success', true, $data);
+            exit;
+        }
+        elseif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
+        {
+
+        }
+        else
+        {
+            sendresponse(405, 'Invalid request method',false);
+            exit;
+        }
     }
 
     public function submitfeedback()
