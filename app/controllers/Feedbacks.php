@@ -3,9 +3,11 @@
 class Feedbacks extends Controller
 {
     private $feedbackmodel;
+    private $deliverymodel;
     public function __construct()
     {
         $this->feedbackmodel = $this->model('Feedback');
+        $this->deliverymodel = $this->model('Delivery');
     }
 
     public function index()
@@ -27,6 +29,48 @@ class Feedbacks extends Controller
 
             sendresponse(200, 'Success', true, $data);
             exit;
+        }
+        elseif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
+        {
+
+        }
+        else
+        {
+            sendresponse(405, 'Invalid request method',false);
+            exit;
+        }
+    }
+
+    public function sendfeedbacksms()
+    {
+        validatetoken();
+        if($_SERVER['REQUEST_METHOD'] === 'POST')
+        {
+            $fields = json_decode(file_get_contents('php://input'));
+            $deliveryId = isset($fields->deliveryId) && !empty(trim($fields->deliveryId)) ? (int)trim($fields->deliveryId) : null;
+
+            if(is_null($deliveryId)){
+               sendresponse(400,['Select delivery'],false);
+               exit;
+            }
+
+            if(!$this->feedbackmodel->DeliveryFound($deliveryId)){
+               sendresponse(404,['Selected delivery not found'],false) ;
+               exit;
+            }
+
+            $details = $this->feedbackmodel->GetDeliveryDetails($deliveryId);
+            $dateformatted = date('d-m-Y',strtotime($details[1]));
+            $uniqueid = $details[2];
+
+
+            $message = "Greetings. We would love to hear from you on the recent delivery we made on {$dateformatted}.Click on the provided link to share your feedback.\n https://feedback.panesar.co.ke/?did={$uniqueid}";
+            $result = sendmessage($details[0],$message);
+            $status = $result['status'];
+            $this->deliverymodel->UpdateNotificationStatus($status,$uniqueid,'feedback');
+            sendresponse(201,'Success',true);
+            exit;
+            
         }
         elseif ($_SERVER['REQUEST_METHOD'] === 'OPTIONS')
         {

@@ -73,4 +73,16 @@ class Feedback
                 ORDER BY f.ID DESC';
         return loadresultset($this->db->dbh,$sql,[]);
     }
+
+    public function DeliveryFound($id)
+    {
+        return converttobool(getdbvalue($this->db->dbh,'SELECT COUNT(*) FROM deliveries WHERE (ID=?)',[(int)$id]));
+    }
+
+    public function GetDeliveryDetails($id)
+    {
+        $details = loadsingleset($this->db->dbh,'SELECT ClientId,DeliveryDate,UniqueId FROM deliveries WHERE (ID=?)',[(int)$id]);
+        $contact = getdbvalue($this->db->dbh,'SELECT Contact FROM clients WHERE (ID=?)',[(int)$details->ClientId]);
+        return [$contact,$details->DeliveryDate,$details->UniqueId];
+    }
 }
