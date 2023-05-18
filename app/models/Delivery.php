@@ -39,9 +39,13 @@ class Delivery
         return true;
     }
 
-    public function UpdateNotificationStatus($status,$uniqueid)
+    public function UpdateNotificationStatus($status,$uniqueid,$type = 'delivery')
     {
-        $this->db->query('UPDATE deliveries SET NotificationStatus=:notstatus WHERE UniqueId=:id');
+        if($type === 'delivery'){
+            $this->db->query('UPDATE deliveries SET NotificationStatus=:notstatus WHERE UniqueId=:id');
+        }else{
+            $this->db->query('UPDATE deliveries SET FeedbackNotificationStatus=:notstatus WHERE UniqueId=:id');
+        }
         $this->db->bind(':notstatus',$status);
         $this->db->bind(':id',$uniqueid);
         if(!$this->db->execute()){
