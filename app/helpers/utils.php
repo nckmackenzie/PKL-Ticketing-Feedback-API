@@ -162,3 +162,8 @@ function generaterandompassword() {
     }
     return implode($pass); //turn the array into a string
 }
+
+function converttobool($val){
+    $converted = filter_var($val, FILTER_VALIDATE_BOOLEAN);
+    return $converted;
+}
